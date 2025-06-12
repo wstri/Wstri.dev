@@ -14,7 +14,7 @@
             background-color: #000;
             overflow: hidden;
             font-family: 'Source Code Pro', monospace;
-            cursor: url('https://cdn.discordapp.com/attachments/1379464149444071436/1382830248789409802/cursor.png?ex=684c9487&is=684b4307&hm=4e40ec7635b0d699c9aeb25137222c8b06e4bddf3fed3e5ad50dba6c2278960d&') 16 16, auto;
+            cursor: url('cursor.png') 16 16, auto;
         }
         
         #enter-screen {
@@ -162,6 +162,14 @@
             box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
         }
         
+        #youtube-audio {
+            position: absolute;
+            top: -1000px; /* Hide the iframe off-screen */
+            width: 1px;
+            height: 1px;
+            border: 0;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -199,13 +207,13 @@
                 </div>
                 <button class="more-info-btn">More Info</button>
                 <div class="info-paragraph">
-                   Hey, my name is Wisteria i like developing stuff python or luau related  📍USA.
-Discord: wstrii</div>
+                    Hey, I’m wstrii! I’m 19, based in the US, and super into coding and creating all sorts of stuff. When I’m not tinkering with projects, I’m usually diving into games like Fortnite, Roblox, Rainbow Six Siege, or Call of Duty Black Ops 3. Wanna chat? Hit me up on Discord at wstrii!
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- <audio id="audio-player" src="music/3.mp3" loop></audio> -->
+    <iframe id="youtube-audio" src="https://www.youtube.com/embed/B_sxvy0Drrc?autoplay=1&mute=0&loop=1&playlist=B_sxvy0Drrc&controls=0" frameborder="0" allow="autoplay"></iframe>
 
     <script>
         // Matrix Animation
@@ -246,16 +254,16 @@ Discord: wstrii</div>
 
         setInterval(draw, 33);
 
-        // Click to Enter
+        // Click to Enter and start audio
         const enterScreen = document.getElementById('enter-screen');
         const content = document.getElementById('content');
-        const audioPlayer = document.getElementById('audio-player');
+        const youtubeIframe = document.getElementById('youtube-audio');
 
         document.addEventListener('click', () => {
             enterScreen.style.display = 'none';
             content.style.display = 'block';
-            // if (audioPlayer) audioPlayer.play(); // Uncomment when audio is available
-        });
+            youtubeIframe.src += ''; // Reload to trigger autoplay after user interaction
+        }, { once: true });
 
         // Resize canvas on window resize
         window.addEventListener('resize', () => {
