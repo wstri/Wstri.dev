@@ -3,110 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wisteria.dev</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>#strafe</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+        
         body {
-            background: black;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #000;
             overflow: hidden;
+            font-family: 'Source Code Pro', monospace;
+            cursor: url('cursor.png') 16 16, auto;
+        }
+        
+        #enter-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        #enter-message {
+            color: white;
+            font-size: 3em;
+            animation: fadeIn 2s ease-in forwards;
+        }
+        
+        #content {
+            display: none;
+            width: 100%;
+            height: 100%;
             position: relative;
         }
-        .stars {
+        
+        #profiles-container {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            z-index: 10;
+        }
+        
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .pfp {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            animation: twinkle 2s infinite, move 10s infinite linear;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
         }
-        @keyframes twinkle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        
+        .sign {
+            position: absolute;
+            background-color: rgba(255, 182, 193, 0.9);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            white-space: nowrap;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        @keyframes move {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50vw, 50vh); }
+        
+        .sign:after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: rgba(255, 182, 193, 0.9) transparent transparent transparent;
         }
-        .glow {
-            text-shadow: 0 0 10px #260ced, 0 0 20px #260ced, 0 0 30px #260ced;
-            animation: glowPulse 1.5s infinite alternate;
+        
+        .socials-container {
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            box-shadow: 0 0 15px rgba(255, 182, 193, 0.3);
+            display: flex;
+            gap: 15px;
         }
-        @keyframes glowPulse {
-            from { text-shadow: 0 0 5px #260ced, 0 0 10px #260ced; }
-            to { text-shadow: 0 0 15px #260ced, 0 0 25px #260ced, 0 0 40px #260ced; }
-        }
-        .logo {
+        
+        .social-link {
+            display: inline-block;
             width: 24px;
             height: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon {
+            width: 100%;
+            height: 100%;
+            fill: #ffb6c1;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover .social-icon {
+            fill: #ffffff;
+            transform: scale(1.2);
+        }
+        
+        .more-info-btn {
+            margin-top: 15px;
+            background-color: rgba(255, 182, 193, 0.9);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+        }
+        
+        .more-info-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 182, 193, 0.8);
+        }
+        
+        .info-paragraph {
+            display: none;
+            margin-top: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 14px;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen text-black">
-    <!-- Animated Starry Background with Effects -->
-    <script>
-        for (let i = 0; i < 50; i++) {
-            let star = document.createElement('div');
-            star.className = 'stars';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.animationDelay = Math.random() + 's';
-            document.body.appendChild(star);
-        }
-    </script>
-
-    <!-- Background Music -->
-    <audio id="bgMusic" autoplay loop>
-        <!-- Placeholder: Replace with direct .mp3 link for https://youtu.be/Csst0G-QfkU -->
-        <source src="https://cdn.discordapp.com/attachments/1377402908144041996/1378228424803483729/Lil_Tecca_-_Dark_Thoughts_Official_Audio.mp3?ex=683bd6be&is=683a853e&hm=a5319ba36872939e0b33ad5390f626da4ccc2018806837ec88165547b2cfda95&" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    <script>
-        document.getElementById('bgMusic').volume = 0.3; // Set volume to 30%
-    </script>
-
-    <!-- Profile Card -->
-    <div class="bg-white bg-opacity-90 rounded-xl p-6 w-80 text-center" style="background-color: white;">
-        <!-- Profile Image -->
-        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
-            <img src="https://cdn.discordapp.com/avatars/1375675924673990729/6743a972fb92138402bcaeade55eca98.webp?size=1024" alt="Profile" class="w-full h-full object-cover">
-        </div>
-        <!-- Animated Username -->
-        <h1 class="text-2xl font-bold glow">Wisteriia</h1>
-        <!-- Tagline -->
-        <p class="text-sm font-bold mt-2">I like coding and making/developing stuff</p>
-        <!-- Location -->
-        <p class="text-sm font-bold">📍 The Woods</p>
-        <!-- Social Media Icons -->
-        <div class="flex justify-center gap-4 mt-4">
-            <!-- TikTok -->
-            <a href="https://www.tiktok.com/@wstrii" target="_blank">
-                <img src="https://cdn.discordapp.com/attachments/1377057186890645659/1378225815380295800/tiktok-logo-4500.png?ex=683bd450&is=683a82d0&hm=16d104874850b2613095c5eef8422ae569a79196e6e832afddad7268b9378280&" alt="TikTok" class="logo">
-            </a>
-            <!-- Roblox -->
-            <a href="https://www.roblox.com/users/7980743477/profile" target="_blank">
-                <img src="https://cdn.discordapp.com/attachments/1377057186890645659/1378225827711422534/black-roblox-logo-10709.png?ex=683bd453&is=683a82d3&hm=361f9069beca54b25a8e043840f5cde91a5d09c59fe72a37d27e1f17d0869392&" alt="Roblox" class="logo">
-            </a>
-            <!-- Spotify -->
-            <a href="https://open.spotify.com/user/3173ohxrllovycvqb76j3jhjshzu?si=e666c44265634ff1" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" class="logo">
-            </a>
-            <!-- YouTube -->
-            <a href="https://www.youtube.com/@Wisteriiiaaa" target="_blank">
-                <img src="https://cdn.discordapp.com/attachments/1377057186890645659/1378225798947016775/youtube-logo-2431.png?ex=683bd44c&is=683a82cc&hm=1238fa361d679f94095fb5b29d7a9c25ae168f65c388bcd2ac00139467c489ea&" alt="YouTube" class="logo">
-            </a>
-            <!-- GitHub -->
-            <a href="https://github.com/wstri" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="logo">
-            </a>
-            <!-- Discord -->
-            <a href="https://discord.com/users/1375675924673990729/" target="_blank">
-                <img src="https://cdn.discordapp.com/attachments/1377057186890645659/1378226277567172650/discord-logo-8233.png?ex=683bd4be&is=683a833e&hm=016a8ae7fb21a78fc3f8e4c253c9d2bcac775dc285694d59e43776f277d8a2a6&" alt="Discord" class="logo">
-            </a>
-            <!-- Website (Globe Icon) -->
-            <a href="https://youtu.be/Xtq_A2NnHKQ" target="_blank">
-                <img src="https://cdn.discordapp.com/attachments/1377057186890645659/1378226468349542542/user-3296.png?ex=683bd4ec&is=683a836c&hm=691e5364e4a6d085ed7a422b986201b115f3a246352c1f2bb75efe6a034907ac&" alt="Website" class="logo">
-            </a>
+<body>
+    <canvas id="matrix"></canvas>
+    <div id="enter-screen">
+        <div id="enter-message">Click to Enter</div>
+    </div>
+    
+    <div id="content">
+        <div id="profiles-container">
+            <div class="profile">
+                <div class="sign">@wstrii</div>
+                <div class="pfp" style="background-image: url('https://cdn.discordapp.com/avatars/1375675924673990729/a_5cbb0dcf464c11f075e6016167f76b98.webp?size=1024&animated=true');"></div>
+                <div class="socials-container">
+                    <a class="social-link" href="https://discord.gg/hEWUB4cw77" target="_blank" rel="noopener noreferrer" title="discord: hEWUB4cw77">
+                        <svg viewBox="0 0 24 24" class="social-icon"><path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95v.02c.01.02.02.04.04.05 1.8 1.32 3.53 2.12 5.24 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.04.03.04.09-.01.11-.52.31-1.07.56-1.64.78-.04.01-.05.06-.04.09.32.61.68 1.19 1.07 1.74.03.01.06.02.09.01 1.72-.53 3.45-1.33 5.25-2.65.02-.01.03-.03.04-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12 0-1.17.84-2.13 1.89-2.13 1.06 0 1.9.96 1.89 2.13 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12 0-1.17.84-2.13 1.89-2.13 1.06 0 1.9.96 1.89 2.13 0 1.17-.83 2.12-1.89 2.12z"></path></svg>
+                    </a>
+                    <a class="social-link" href="https://www.tiktok.com/@wstri7" target="_blank" rel="noopener noreferrer" title="tiktok: wstri7">
+                        <svg viewBox="0 0 24 24" class="social-icon"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>
+                    </a>
+                    <a class="social-link" href="https://github.com/wstrii" target="_blank" rel="noopener noreferrer" title="github: wstrii">
+                        <svg viewBox="0 0 24 24" class="social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.111.82-.261.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    </a>
+                </div>
+                <button class="more-info-btn">More Info</button>
+                <div class="info-paragraph">
+                   Hey, my name is Wisteria i like developing stuff python or luau related  📍USA.
+Discord: wstrii</div>
+            </div>
         </div>
     </div>
+    
+    <!-- <audio id="audio-player" src="music/3.mp3" loop></audio> -->
+
+    <script>
+        // Matrix Animation
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffb6c1';
+            ctx.font = fontSize + 'px Source Code Pro';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                ctx.fillText(text, x, y);
+
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 33);
+
+        // Click to Enter
+        const enterScreen = document.getElementById('enter-screen');
+        const content = document.getElementById('content');
+        const audioPlayer = document.getElementById('audio-player');
+
+        document.addEventListener('click', () => {
+            enterScreen.style.display = 'none';
+            content.style.display = 'block';
+            // if (audioPlayer) audioPlayer.play(); // Uncomment when audio is available
+        });
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+        });
+
+        // Toggle More Info paragraph
+        const moreInfoBtn = document.querySelector('.more-info-btn');
+        const infoParagraph = document.querySelector('.info-paragraph');
+
+        moreInfoBtn.addEventListener('click', () => {
+            infoParagraph.style.display = infoParagraph.style.display === 'block' ? 'none' : 'block';
+        });
+    </script>
 </body>
 </html>
